@@ -41,16 +41,21 @@ void startMenu()
 				root = root->loadFromFile(filename, masterPassword); //throws runtime_error
 				status = entriesMenu(root, filename, masterPassword);
 			}
-			catch (std::exception e)
+			catch (std::runtime_error re)
 			{
-				if (e.what() == "Unknown exception")
+				if (re.what() == "Unknown exception")
 				{
 					std::cerr << "Could not open file '" + filename + "'" << std::endl;
 				}
 				else
 				{
-					std::cerr << e.what() << std::endl;
+					std::cerr << re.what() << std::endl;
 				}
+				choice = 0;
+			}
+			catch (std::exception e) // needed for the GCC compiler
+			{
+				std::cerr << "Could not open file '" + filename + "'" << std::endl;
 				choice = 0;
 			}
 			break;
@@ -152,16 +157,20 @@ bool entriesMenu(AVLTree* root, std::string& filename, std::string& masterPasswo
 				std::cout << "Input not recognised, please try again" << std::endl;
 			}
 		}
-		catch (std::exception e)
+		catch (std::runtime_error re)
 		{
-			if (e.what() == "Unknown exception")
+			if (re.what() == "Unknown exception")
 			{
-				std::cerr << "Could not save to file '" + filename + "'" << std::endl;
+				std::cerr << "Could not open file '" + filename + "'" << std::endl;
 			}
 			else
 			{
-				std::cerr << e.what() << std::endl;
+				std::cerr << re.what() << std::endl;
 			}
+		}
+		catch (std::exception e) // needed for the GCC compiler
+		{
+			std::cerr << "Could not open file '" + filename + "'" << std::endl;
 		}
 	}
 }

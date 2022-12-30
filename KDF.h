@@ -13,5 +13,5 @@
 #include "sha3.h"
 #include "hex.h"
 
-std::string KDF(std::string password, std::string salt);
+std::string KDF(std::string& password, std::string& salt);
 std::string newSalt();

@@ -3,11 +3,23 @@
 A command line password manager
 
 ## Download
-Here you can download binaries
+Here you can download Linux and Windows x64 binaries
 
 **[DOWNLOAD](https://github.com/apavazza/PasswordManager/releases)**
 
 ## Compiling
+
+### Linux
+
+1. clone the repository using `git clone --recurse-submodules`
+2. go into the `cryptopp` directory
+3. run `make`
+4. run `make install`
+5. go back to the project's main directory
+6. run `g++ -DNDEBUG -I /usr/local/include/cryptopp PasswordManager.cpp AVLTree.cpp AES-CBC.cpp KDF.cpp -c`
+7. run `g++ PasswordManager.o AVLTree.o AES-CBC.o KDF.o /usr/local/lib/libcryptopp.a -o PasswordManager`
+
+### Windows
 
 1. clone the repository using `git clone --recurse-submodules`
 2. open `cryptlib.vcxproj` located inside the `cryptopp` directory
@@ -24,7 +36,7 @@ Here you can download binaries
 
 ## Encryption
 Password databases are encrypted with AES-256-CBC.  
-Key derivation algorithm is PKCS5 PBKDF2 HMAC with SHA3-256 hashing.
+Key derivation function is PKCS5 PBKDF2 HMAC with SHA3-256 hashing.
 
 ## License
 This software is provided under the terms of the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.txt).

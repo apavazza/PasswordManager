@@ -3,7 +3,7 @@
 * Key derivation function
 * Uses PKCS5 PBKDF2 HMAC with SHA3-256 hashing
 */
-std::string KDF(std::string password, std::string salt)
+std::string KDF(std::string& password, std::string& salt)
 {
     // converting password to unsigned char array
     CryptoPP::byte* cPassword = (unsigned char*) password.c_str();

@@ -6,7 +6,7 @@
 /*
 * Encrypts a string, encodes it and saves it into a file
 */
-void encryptAndSave(std::string plainText, std::string password, std::string filename)
+void encryptAndSave(std::string& plainText, std::string& password, std::string& filename)
 {
 	// salt setup
 	std::string salt = newSalt();
@@ -66,7 +66,7 @@ void encryptAndSave(std::string plainText, std::string password, std::string fil
 /*
 * Loads the chiper text, decodes it and decrypts it
 */
-std::string loadAndDecrypt(std::string password, std::string filename)
+std::string loadAndDecrypt(std::string& password, std::string& filename)
 {
 	// string setup
 	std::string plainText, cipherText, encoded, sIvEncoded, sIv, salt, saltEncoded;

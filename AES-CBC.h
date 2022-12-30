@@ -22,8 +22,8 @@
 
 #include "KDF.h"
 
-void encryptAndSave(std::string plainText, std::string password, std::string filename);
-std::string loadAndDecrypt(std::string password, std::string filename);
+void encryptAndSave(std::string& plainText, std::string& password, std::string& filename);
+std::string loadAndDecrypt(std::string& password, std::string& filename);
 
 /*
 * NOTE: Format of the encrypted password database file
