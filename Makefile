@@ -15,3 +15,6 @@ KDF.o: KDF.cpp KDF.h
 
 clean:
 	rm PasswordManager.o AVLTree.o AES-CBC.o KDF.o
+
+install:
+	cp PasswordManager /usr/bin/PasswordManager

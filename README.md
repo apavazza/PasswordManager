@@ -17,7 +17,8 @@ Here you can download Linux and Windows x64 binaries
 4. run `# make install`
 5. go back to the project's main directory
 6. run `$ make`
-7. done
+7. run `# make install`
+8. done
 
 ### Windows
 
