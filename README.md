@@ -11,13 +11,13 @@ Here you can download Linux and Windows x64 binaries
 
 ### Linux
 
-1. clone the repository using `git clone --recurse-submodules`
+1. clone the repository using `$ git clone --recurse-submodules`
 2. go into the `cryptopp` directory
-3. run `make`
-4. run `make install`
+3. run `$ make`
+4. run `# make install`
 5. go back to the project's main directory
-6. run `g++ -DNDEBUG -I /usr/local/include/cryptopp PasswordManager.cpp AVLTree.cpp AES-CBC.cpp KDF.cpp -c`
-7. run `g++ PasswordManager.o AVLTree.o AES-CBC.o KDF.o /usr/local/lib/libcryptopp.a -o PasswordManager`
+6. run `$ make`
+7. done
 
 ### Windows
 
@@ -29,10 +29,9 @@ Here you can download Linux and Windows x64 binaries
 6. now open `PasswordManager.sln` located in the main directory
 7. select the `Release` configuration and compile it
 8. You are done. If you installed the `cryptlib` library in a different location or got any linker errors continue with these steps:
-9. go to `Project->Properties->Configuration Properties->C/C++->General`, in the field `Additional Include Directories` add `$(ProjectDir)\cryptopp\`
-10. go to `Project->Properties->Configuration Properties->C/C++->Code Generation`, set the field `Runtime Library` to `Multi-threaded (/MT)` for the `Release` configuration and `Multi-threaded Debug (/MTd)` for the `Debug` configuration
-11. go to `Project->Properties->Configuration Properties->Linker->General`, in the field `Additional Library Directories` add  `$(ProjectDir)\cryptopp\x64\Output\Debug\`
-12. go to `Project->Properties->Configuration Properties->Linker->Input`, in the field `Additional Dependencies` add `$(ProjectDir)\cryptopp\x64\Output\Debug\cryptlib.lib`
+9. go to `Project->Properties->Configuration Properties->C/C++->Code Generation`, set the field `Runtime Library` to `Multi-threaded (/MT)` for the `Release` configuration and `Multi-threaded Debug (/MTd)` for the `Debug` configuration
+10. go to `Project->Properties->Configuration Properties->Linker->General`, in the field `Additional Library Directories` add  `$(ProjectDir)\cryptopp\x64\Output\Release\`
+11. go to `Project->Properties->Configuration Properties->Linker->Input`, in the field `Additional Dependencies` add `$(ProjectDir)\cryptopp\x64\Output\Release\cryptlib.lib`
 
 ## Encryption
 Password databases are encrypted with AES-256-CBC.  

@@ -4,21 +4,14 @@
 
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
 #include <string>
 #include <cstdlib>
-
-#include "osrng.h"
-#include "cryptlib.h"
-#include "hex.h"
-#include "filters.h"
-#include "aes.h"
-#include "ccm.h"
-#include "assert.h"
-#include "files.h"
-#include "simple.h"
-#include "osrng.h"
-#include "modes.h"
+#include "cryptopp/osrng.h"
+#include "cryptopp/cryptlib.h"
+#include "cryptopp/hex.h"
+#include "cryptopp/aes.h"
+#include "cryptopp/files.h"
+#include "cryptopp/modes.h"
 
 #include "KDF.h"
 
