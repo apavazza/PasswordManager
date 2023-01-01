@@ -18,7 +18,7 @@ Here you can download Linux and Windows x64 binaries
 5. go back to the project's main directory
 6. run `$ make`
 7. run `# make install`
-8. done
+8. now you can run the program using `$ PasswordManager`
 
 ### Windows
 
