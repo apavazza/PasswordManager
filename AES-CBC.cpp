@@ -20,11 +20,10 @@ void encryptAndSave(std::string& plainText, std::string& password, std::string& 
 	CryptoPP::AutoSeededRandomPool prng;
 	CryptoPP::byte iv[CryptoPP::AES::BLOCKSIZE] = { 0 };
 	prng.GenerateBlock(iv, sizeof(iv));
-	std::string sIv((char*) iv);
 
 	// encode iv
 	std::string sIvEncoded;
-	CryptoPP::StringSource(sIv, true,
+	CryptoPP::StringSource(iv, sizeof(iv), true,
 		new CryptoPP::HexEncoder(
 			new CryptoPP::StringSink(sIvEncoded)
 		)
@@ -77,16 +76,17 @@ std::string loadAndDecrypt(std::string& password, std::string& filename)
 	ifile >> sIvEncoded;
 	ifile >> encoded;
 	ifile.close();
-
+	
 	// decode iv
 	CryptoPP::StringSource (sIvEncoded, true,
 		new CryptoPP::HexDecoder(
 			new CryptoPP::StringSink(sIv)
 		)
 	);
+	
 	CryptoPP::byte* iv = (unsigned char*) sIv.c_str();
 	strcpy((char*)iv, sIv.c_str());
-
+	
 	// decode salt
 	CryptoPP::StringSource(saltEncoded, true,
 		new CryptoPP::HexDecoder(
