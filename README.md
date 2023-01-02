@@ -7,6 +7,13 @@ Here you can download Linux and Windows x64 binaries
 
 **[DOWNLOAD](https://github.com/apavazza/PasswordManager/releases)**
 
+## Command line arguments
+
+There are two optional command line arguments that you can use.  
+Use of these arguments skips the start menu.  
+`-n <filename>` creates a new password database  
+`-o <filename>` opens an existing password database
+
 ## Compiling
 
 ### Linux

@@ -4,65 +4,103 @@
 */
 #include "PasswordManager.h"
 
-int main()
+int main(int argc, char* argv[])
 {
-	startMenu();
+	try {
+		switch (argc)
+		{
+		case 1: // no arguments passed
+			startMenu(false, 0, "");
+			break;
+		case 3: // arguments passed
+			if (strcmp(argv[1], "-n") == 0) // create a new file
+			{
+				startMenu(true, 2, std::string(argv[2]));
+			}
+			else if (strcmp(argv[1], "-o") == 0) // opena a file
+			{
+				startMenu(true, 1, std::string(argv[2]));
+			}
+			else
+			{
+				throw std::invalid_argument("Invalid arguments passed");
+			}
+			break;
+		default:
+			throw std::invalid_argument("Invalid arguments passed");
+			break;
+		}
+	}
+	catch (std::invalid_argument& ia)
+	{
+		std::cerr << ia.what() << std::endl;
+	}
 	return EXIT_SUCCESS;
 }
 
 /*
 * Provides the start menu.
 */
-void startMenu()
+void startMenu(bool argsPassed, int choice, std::string argFilename)
 {
-	int choice;
 	std::string filename, masterPassword;
 	AVLTree* root = nullptr;
 	bool status = false;
 	std::cout << "Password Manager" << std::endl << std::endl;
-	printstartMenu();
+	if(!argsPassed) printstartMenu();
 
 	do {
-		std::cout << " > ";
-		std::cin >> choice;
-		if (std::cin.fail()) {
-			std::cin.clear();
-			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-			choice = 0;
+		if (!argsPassed)
+		{
+			std::cout << " > ";
+			std::cin >> choice;
+			if (std::cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				choice = 0;
+			}
 		}
 		switch (choice)
 		{
 		case 1: // Open an existing database
-			std::cout << "File name: ";
-			std::cin >> filename;
+			if (!argsPassed)
+			{
+				std::cout << "File name: ";
+				std::cin >> filename;
+			}
+			else
+			{
+				filename = argFilename;
+			}
 			std::cout << "Password: ";
 			std::cin >> masterPassword;
 			try {
 				root = root->loadFromFile(filename, masterPassword); //throws runtime_error
 				status = entriesMenu(root, filename, masterPassword);
 			}
-			catch (std::runtime_error re)
+			catch (std::runtime_error& re)
 			{
-				if (re.what() == "Unknown exception")
-				{
-					std::cerr << "Could not open file '" + filename + "'" << std::endl;
-				}
-				else
-				{
-					std::cerr << re.what() << std::endl;
-				}
+				std::cerr << re.what() << std::endl;
 				choice = 0;
 			}
-			catch (std::exception e) // needed for the GCC compiler
+			catch (std::exception&)
 			{
 				std::cerr << "Could not open file '" + filename + "'" << std::endl;
+				if (argsPassed) break;
 				choice = 0;
 			}
 			break;
 		case 2: // Create a new database
-			std::cout << "File name: ";
-			std::cin >> filename;
-			std::cout << "Password: ";
+			if (!argsPassed)
+			{
+				std::cout << "File name: ";
+				std::cin >> filename;
+			}
+			else
+			{
+				filename = argFilename;
+			}
+			std::cout << "Create a password: ";
 			std::cin >> masterPassword;
 			status = entriesMenu(root, filename, masterPassword);
 			// FALLTHROUGH
@@ -157,20 +195,13 @@ bool entriesMenu(AVLTree* root, std::string& filename, std::string& masterPasswo
 				std::cout << "Input not recognised, please try again" << std::endl;
 			}
 		}
-		catch (std::runtime_error re)
+		catch (std::runtime_error& re)
 		{
-			if (re.what() == "Unknown exception")
-			{
-				std::cerr << "Could not open file '" + filename + "'" << std::endl;
-			}
-			else
-			{
-				std::cerr << re.what() << std::endl;
-			}
+			std::cerr << re.what() << std::endl;
 		}
-		catch (std::exception e) // needed for the GCC compiler
+		catch (std::exception&)
 		{
-			std::cerr << "Could not open file '" + filename + "'" << std::endl;
+			std::cerr << "Could not save file '" + filename + "'" << std::endl;
 		}
 	}
 }

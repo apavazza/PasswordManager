@@ -18,3 +18,6 @@ clean:
 
 install:
 	cp PasswordManager /usr/bin/PasswordManager
+
+uninstall:
+	rm /usr/bin/PasswordManager

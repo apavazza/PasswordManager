@@ -40,7 +40,5 @@ std::string newSalt()
     int r = rand() % 10000;
     std::stringstream ss;
     ss << r;
-    std::string strR = ss.str();
-
-    return strR;
+    return ss.str();
 }
