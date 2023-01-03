@@ -10,16 +10,16 @@ int main(int argc, char* argv[])
 		switch (argc)
 		{
 		case 1: // no arguments passed
-			startMenu(false, 0, "");
+			startMenu(false, mode::MENU, "");
 			break;
 		case 3: // arguments passed
 			if (strcmp(argv[1], "-n") == 0) // create a new file
 			{
-				startMenu(true, 2, std::string(argv[2]));
+				startMenu(true, mode::NEW, std::string(argv[2]));
 			}
 			else if (strcmp(argv[1], "-o") == 0) // opena a file
 			{
-				startMenu(true, 1, std::string(argv[2]));
+				startMenu(true, mode::OPEN, std::string(argv[2]));
 			}
 			else
 			{
@@ -43,9 +43,9 @@ int main(int argc, char* argv[])
 */
 void startMenu(bool argsPassed, int choice, std::string argFilename)
 {
-	std::string filename, masterPassword;
+	std::string filename;
+	std::string masterPassword;
 	AVLTree* root = nullptr;
-	bool status = false;
 	std::cout << "Password Manager" << std::endl << std::endl;
 	if(!argsPassed) printstartMenu();
 
@@ -57,12 +57,12 @@ void startMenu(bool argsPassed, int choice, std::string argFilename)
 			if (std::cin.fail()) {
 				std::cin.clear();
 				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-				choice = 0;
+				choice = mode::MENU;
 			}
 		}
 		switch (choice)
 		{
-		case 1: // Open an existing database
+		case mode::OPEN: // Open an existing database
 			if (!argsPassed)
 			{
 				std::cout << "File name: ";
@@ -76,21 +76,21 @@ void startMenu(bool argsPassed, int choice, std::string argFilename)
 			std::cin >> masterPassword;
 			try {
 				root = root->loadFromFile(filename, masterPassword); //throws runtime_error
-				status = entriesMenu(root, filename, masterPassword);
+				entriesMenu(root, filename, masterPassword);
 			}
 			catch (std::runtime_error& re)
 			{
 				std::cerr << re.what() << std::endl;
-				choice = 0;
+				choice = mode::MENU;
 			}
 			catch (std::exception&)
 			{
 				std::cerr << "Could not open file '" + filename + "'" << std::endl;
 				if (argsPassed) break;
-				choice = 0;
+				choice = mode::MENU;
 			}
 			break;
-		case 2: // Create a new database
+		case mode::NEW: // Create a new database
 			if (!argsPassed)
 			{
 				std::cout << "File name: ";
@@ -102,17 +102,18 @@ void startMenu(bool argsPassed, int choice, std::string argFilename)
 			}
 			std::cout << "Create a password: ";
 			std::cin >> masterPassword;
-			status = entriesMenu(root, filename, masterPassword);
+			entriesMenu(root, filename, masterPassword);
 			// FALLTHROUGH
-		case 3:
+		case mode::QUIT:
 			// Quitting application
 			break;
 		default:
 			printstartMenu();
 			std::cout << "Input not recognised, please try again" << std::endl;
+			choice = mode::MENU;
 			break;
 		}
-	} while (choice != 1 && choice != 2 && choice != 3 && !status);
+	} while (choice == mode::MENU);
 
 	std::cout << "Quitting application..." << std::endl;
 }
@@ -120,34 +121,36 @@ void startMenu(bool argsPassed, int choice, std::string argFilename)
 /*
 * Provides the menu used for managing entries in the database.
 */
-bool entriesMenu(AVLTree* root, std::string& filename, std::string& masterPassword)
+void entriesMenu(AVLTree* root, std::string& filename, std::string& masterPassword)
 {
 	printEntriesMenu();
 
 	while (true)
 	{
 		try {
-			int choice;
-			std::string name, username, password;
+			int choice = command::ASK;
+			std::string name;
+			std::string username;
+			std::string password;
 			AVLTree* temp;
 			std::cout << " > ";
 			std::cin >> choice;
 			if (std::cin.fail()) {
 				std::cin.clear();
 				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-				choice = 0;
+				choice = command::ASK;
 			}
 			switch (choice)
 			{
-			case 1: // List all entries
+			case command::LIST_ALL: // List all entries
 				std::cout << root->allToString();
 				break;
-			case 2: // find an entry
+			case command::FIND: // find an entry
 				std::cout << "Enter application name to search: ";
 				std::cin >> name;
 				std::cout << root->findNode(name)->toString();
 				break;
-			case 3: // add an entry
+			case command::ADD: // add an entry
 				std::cout << "Enter application name: ";
 				std::cin >> name;
 				std::cout << "Enter username: ";
@@ -156,12 +159,12 @@ bool entriesMenu(AVLTree* root, std::string& filename, std::string& masterPasswo
 				std::cin >> password;
 				root = root->insertNodeAVL(name, username, password); //throws runtime_error
 				break;
-			case 4: // delete an entry
+			case command::DELETE: // delete an entry
 				std::cout << "Application name to delete: ";
 				std::cin >> name;
 				root = root->deleteNode(name); //balance
 				break;
-			case 5: // update username
+			case command::UPDATE_USERNAME: // update username
 				std::cout << "Enter application name: ";
 				std::cin >> name;
 				temp = root->findNode(name);
@@ -169,7 +172,7 @@ bool entriesMenu(AVLTree* root, std::string& filename, std::string& masterPasswo
 				std::cin >> username;
 				temp->setUsername(username);
 				break;
-			case 6: // update password
+			case command::UPDATE_PASSWORD: // update password
 				std::cout << "Enter application name: ";
 				std::cin >> name;
 				temp = root->findNode(name);
@@ -177,19 +180,19 @@ bool entriesMenu(AVLTree* root, std::string& filename, std::string& masterPasswo
 				std::cin >> password;
 				temp->setPassword(password);
 				break;
-			case 7: // save as... and exit
+			case command::SAVE_AS: // save as... and exit
 				std::cout << "New file name: ";
 				std::cin >> filename;
 				std::cout << "New password: ";
 				std::cin >> masterPassword;
 				// FALLTHROUGH
-			case 8: // save changes and exit
+			case command::SAVE: // save changes and exit
 				root->saveToFile(filename, masterPassword); //throws runtime_error
 				std::cout << "File saved" << std::endl;
 				// FALLTHROUGH
-			case 9: // discard changes and exit
+			case command::EXIT: // discard changes and exit
 				root = root->deleteAllNodes();
-				return true;
+				return;
 			default:
 				printEntriesMenu();
 				std::cout << "Input not recognised, please try again" << std::endl;
