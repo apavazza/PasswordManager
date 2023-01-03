@@ -140,12 +140,12 @@ bool entriesMenu(AVLTree* root, std::string& filename, std::string& masterPasswo
 			switch (choice)
 			{
 			case 1: // List all entries
-				root->printAll();
+				std::cout << root->allToString();
 				break;
 			case 2: // find an entry
 				std::cout << "Enter application name to search: ";
 				std::cin >> name;
-				root->findNode(name)->print();
+				std::cout << root->findNode(name)->toString();
 				break;
 			case 3: // add an entry
 				std::cout << "Enter application name: ";

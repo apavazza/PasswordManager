@@ -3,7 +3,6 @@
 */
 
 #pragma once
-#include <iostream>
 #include <string>
 #include <sstream>
 #include "AES-CBC.h"
@@ -17,8 +16,8 @@ public:
 	AVLTree* findNode(std::string& nameToFind);
 	void setUsername(std::string& newUsername);
 	void setPassword(std::string& newPassword);
-	void print();
-	void printAll();
+	std::string toString();
+	std::string allToString();
 	AVLTree* deleteAllNodes();
 	void saveToFile(std::string& filename, std::string& masterPassword);
 	AVLTree* loadFromFile(std::string& filename, std::string& masterPassword);

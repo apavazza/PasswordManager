@@ -252,23 +252,27 @@ void AVLTree::setPassword(std::string& newPassword)
 /*
 * Prints the node.
 */
-void AVLTree::print()
+std::string AVLTree::toString()
 {
-	if (!this) return;
-	std::cout << "Application name: " << name << std::endl
+	if (!this) return "";
+	std::stringstream buffer;
+	buffer << "Application name: " << name << std::endl
 		<< "Username: " << username << std::endl
 		<< "Password: " << password << std::endl << std::endl;
+	return buffer.str();
 }
 
 /*
 * Prints all nodes.
 */
-void AVLTree::printAll()
+std::string AVLTree::allToString()
 {
-	if (!this) return;
-	this->left->printAll();
-	this->print();
-	this->right->printAll();
+	if (!this) return "";
+	std::stringstream buffer;
+	buffer << this->left->allToString();
+	buffer << this->toString();
+	buffer << this->right->allToString();
+	return buffer.str();
 }
 
 /*
