@@ -12,9 +12,7 @@ void encryptAndSave(std::string& plainText, std::string& password, std::string& 
 	std::string salt = newSalt();
 
 	// key setup
-	std::string sKey = KDF(password, salt);
-	CryptoPP::byte* key = (unsigned char*) sKey.c_str();
-	strcpy((char*)key, sKey.c_str());
+	std::string key = KDF(password, salt);
 
 	// generate random iv
 	CryptoPP::AutoSeededRandomPool prng;
@@ -40,7 +38,7 @@ void encryptAndSave(std::string& plainText, std::string& password, std::string& 
 	std::string cipherText, cipherTextEncoded;
 
 	// create cipher text
-	CryptoPP::AES::Encryption aesEncryption(key, CryptoPP::AES::DEFAULT_KEYLENGTH);
+	CryptoPP::AES::Encryption aesEncryption((unsigned char*)key.c_str(), CryptoPP::AES::DEFAULT_KEYLENGTH);
 	CryptoPP::CBC_Mode_ExternalCipher::Encryption cbcEncryption(aesEncryption, iv);
 
 	CryptoPP::StreamTransformationFilter stfEncryptor(cbcEncryption, new CryptoPP::StringSink(cipherText));
@@ -68,24 +66,21 @@ void encryptAndSave(std::string& plainText, std::string& password, std::string& 
 std::string loadAndDecrypt(std::string& password, std::string& filename)
 {
 	// string setup
-	std::string plainText, cipherText, cipherTextEncoded, sIv, sIvEncoded, salt, saltEncoded;
+	std::string plainText, cipherText, cipherTextEncoded, iv, ivEncoded, salt, saltEncoded;
 
 	// load from a file
 	std::ifstream ifile(filename);
 	ifile >> saltEncoded;
-	ifile >> sIvEncoded;
+	ifile >> ivEncoded;
 	ifile >> cipherTextEncoded;
 	ifile.close();
 	
 	// decode iv
-	CryptoPP::StringSource (sIvEncoded, true,
+	CryptoPP::StringSource (ivEncoded, true,
 		new CryptoPP::HexDecoder(
-			new CryptoPP::StringSink(sIv)
+			new CryptoPP::StringSink(iv)
 		)
 	);
-	
-	CryptoPP::byte* iv = (unsigned char*) sIv.c_str();
-	strcpy((char*)iv, sIv.c_str());
 	
 	// decode salt
 	CryptoPP::StringSource(saltEncoded, true,
@@ -102,13 +97,11 @@ std::string loadAndDecrypt(std::string& password, std::string& filename)
 	);
 	
 	// derive the key
-	std::string sKey = KDF(password, salt);
-	CryptoPP::byte* key = (unsigned char*) sKey.c_str();
-	strcpy((char*)key, sKey.c_str());
+	std::string key = KDF(password, salt);
 
 	// decrypt
-	CryptoPP::AES::Decryption aesDecryption(key, CryptoPP::AES::DEFAULT_KEYLENGTH);
-	CryptoPP::CBC_Mode_ExternalCipher::Decryption cbcDecryption(aesDecryption, iv);
+	CryptoPP::AES::Decryption aesDecryption((unsigned char*)key.c_str(), CryptoPP::AES::DEFAULT_KEYLENGTH);
+	CryptoPP::CBC_Mode_ExternalCipher::Decryption cbcDecryption(aesDecryption, (unsigned char*)iv.c_str());
 
 	CryptoPP::StreamTransformationFilter stfDecryptor(cbcDecryption, new CryptoPP::StringSink(plainText));
 	stfDecryptor.Put(reinterpret_cast<const unsigned char*>(cipherText.c_str()), cipherText.size());
