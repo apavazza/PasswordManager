@@ -30,15 +30,3 @@ std::string KDF(std::string& password, std::string& salt)
 
     return result;
 }
-
-/*
-* Creates a new random salt
-*/
-std::string newSalt()
-{
-    srand((unsigned)time(0));
-    int r = rand() % 10000;
-    std::stringstream ss;
-    ss << r;
-    return ss.str();
-}

@@ -15,10 +15,11 @@
 
 void encryptAndSave(std::string& plainText, std::string& password, std::string& filename);
 std::string loadAndDecrypt(std::string& password, std::string& filename);
+std::string newSalt();
 
 /*
 * NOTE: Format of the encrypted password database file
-* first row: salt
-* second row: iv
-* third row: encrypted JSON data
+* first line: salt
+* second line: iv
+* third line: encrypted JSON data
 */

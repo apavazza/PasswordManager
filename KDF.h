@@ -5,13 +5,10 @@
 
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#include <ctime>
 #include <string>
-#include <sstream>
 #include "cryptopp/cryptlib.h"
 #include "cryptopp/pwdbased.h"
 #include "cryptopp/sha3.h"
 #include "cryptopp/hex.h"
 
 std::string KDF(std::string& password, std::string& salt);
-std::string newSalt();

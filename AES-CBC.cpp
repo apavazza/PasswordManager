@@ -37,9 +37,9 @@ void encryptAndSave(std::string& plainText, std::string& password, std::string& 
 		)
 	);
 
-	std::string cipherText, encoded, decryptedtext;
+	std::string cipherText, cipherTextEncoded;
 
-	// Create Cipher Text
+	// create cipher text
 	CryptoPP::AES::Encryption aesEncryption(key, CryptoPP::AES::DEFAULT_KEYLENGTH);
 	CryptoPP::CBC_Mode_ExternalCipher::Encryption cbcEncryption(aesEncryption, iv);
 
@@ -50,7 +50,7 @@ void encryptAndSave(std::string& plainText, std::string& password, std::string& 
 	// encode cipher text
 	CryptoPP::StringSource(cipherText, true,
 		new CryptoPP::HexEncoder(
-			new CryptoPP::StringSink(encoded)
+			new CryptoPP::StringSink(cipherTextEncoded)
 		)
 	);
 
@@ -58,7 +58,7 @@ void encryptAndSave(std::string& plainText, std::string& password, std::string& 
 	std::ofstream ofile(filename);
 	ofile << saltEncoded << std::endl;
 	ofile << sIvEncoded << std::endl;
-	ofile << encoded;
+	ofile << cipherTextEncoded;
 	ofile.close();
 }
 
@@ -68,13 +68,13 @@ void encryptAndSave(std::string& plainText, std::string& password, std::string& 
 std::string loadAndDecrypt(std::string& password, std::string& filename)
 {
 	// string setup
-	std::string plainText, cipherText, encoded, sIvEncoded, sIv, salt, saltEncoded;
+	std::string plainText, cipherText, cipherTextEncoded, sIv, sIvEncoded, salt, saltEncoded;
 
 	// load from a file
 	std::ifstream ifile(filename);
 	ifile >> saltEncoded;
 	ifile >> sIvEncoded;
-	ifile >> encoded;
+	ifile >> cipherTextEncoded;
 	ifile.close();
 	
 	// decode iv
@@ -95,7 +95,7 @@ std::string loadAndDecrypt(std::string& password, std::string& filename)
 	);
 
 	// decode cipher text
-	CryptoPP::StringSource (encoded, true,
+	CryptoPP::StringSource (cipherTextEncoded, true,
 		new CryptoPP::HexDecoder(
 			new CryptoPP::StringSink(cipherText)
 		)
@@ -115,4 +115,15 @@ std::string loadAndDecrypt(std::string& password, std::string& filename)
 	stfDecryptor.MessageEnd();
 
 	return plainText;
+}
+
+/*
+* Creates a new random salt
+*/
+std::string newSalt()
+{
+	CryptoPP::AutoSeededRandomPool prng;
+	CryptoPP::byte salt[CryptoPP::AES::BLOCKSIZE] = { 0 };
+	prng.GenerateBlock(salt, sizeof(salt));
+	return std::string((char*)salt);
 }
