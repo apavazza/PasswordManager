@@ -8,14 +8,16 @@
 */
 void encryptAndSave(std::string& plainText, std::string& password, std::string& filename)
 {
+	// random generator setup
+	CryptoPP::AutoSeededRandomPool prng;
+
 	// salt setup
-	std::string salt = newSalt();
+	std::string salt = newSalt(prng);
 
 	// key setup
 	std::string key = KDF(password, salt);
 
 	// generate random iv
-	CryptoPP::AutoSeededRandomPool prng;
 	CryptoPP::byte iv[CryptoPP::AES::BLOCKSIZE] = { 0 };
 	prng.GenerateBlock(iv, sizeof(iv));
 
@@ -38,11 +40,11 @@ void encryptAndSave(std::string& plainText, std::string& password, std::string& 
 	std::string cipherText, cipherTextEncoded;
 
 	// create cipher text
-	CryptoPP::AES::Encryption aesEncryption((unsigned char*)key.c_str(), CryptoPP::AES::DEFAULT_KEYLENGTH);
+	CryptoPP::AES::Encryption aesEncryption((CryptoPP::byte*)key.c_str(), CryptoPP::AES::DEFAULT_KEYLENGTH);
 	CryptoPP::CBC_Mode_ExternalCipher::Encryption cbcEncryption(aesEncryption, iv);
 
 	CryptoPP::StreamTransformationFilter stfEncryptor(cbcEncryption, new CryptoPP::StringSink(cipherText));
-	stfEncryptor.Put(reinterpret_cast<const unsigned char*>(plainText.c_str()), plainText.length());
+	stfEncryptor.Put(reinterpret_cast<const unsigned char*>(plainText.c_str()), plainText.size());
 	stfEncryptor.MessageEnd();
 
 	// encode cipher text
@@ -100,8 +102,8 @@ std::string loadAndDecrypt(std::string& password, std::string& filename)
 	std::string key = KDF(password, salt);
 
 	// decrypt
-	CryptoPP::AES::Decryption aesDecryption((unsigned char*)key.c_str(), CryptoPP::AES::DEFAULT_KEYLENGTH);
-	CryptoPP::CBC_Mode_ExternalCipher::Decryption cbcDecryption(aesDecryption, (unsigned char*)iv.c_str());
+	CryptoPP::AES::Decryption aesDecryption((CryptoPP::byte*)key.c_str(), CryptoPP::AES::DEFAULT_KEYLENGTH);
+	CryptoPP::CBC_Mode_ExternalCipher::Decryption cbcDecryption(aesDecryption, (CryptoPP::byte*)iv.c_str());
 
 	CryptoPP::StreamTransformationFilter stfDecryptor(cbcDecryption, new CryptoPP::StringSink(plainText));
 	stfDecryptor.Put(reinterpret_cast<const unsigned char*>(cipherText.c_str()), cipherText.size());
@@ -113,9 +115,8 @@ std::string loadAndDecrypt(std::string& password, std::string& filename)
 /*
 * Creates a new random salt
 */
-std::string newSalt()
+std::string newSalt(CryptoPP::AutoSeededRandomPool& prng)
 {
-	CryptoPP::AutoSeededRandomPool prng;
 	CryptoPP::byte salt[CryptoPP::AES::BLOCKSIZE] = { 0 };
 	prng.GenerateBlock(salt, sizeof(salt));
 	return std::string((char*)salt);

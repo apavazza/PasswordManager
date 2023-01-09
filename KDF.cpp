@@ -10,7 +10,7 @@ std::string KDF(std::string& password, std::string& salt)
     CryptoPP::PKCS5_PBKDF2_HMAC<CryptoPP::SHA3_256> pbkdf;
     CryptoPP::byte unused = 0;
 
-    pbkdf.DeriveKey(derived, sizeof(derived), unused, (unsigned char*)password.c_str(), password.length(), (unsigned char*)salt.c_str(), salt.length(), 1024, 0.0f);
+    pbkdf.DeriveKey(derived, sizeof(derived), unused, (CryptoPP::byte*)password.c_str(), password.length(), (CryptoPP::byte*)salt.c_str(), salt.size(), 1024, 0.0f);
 
     std::string result;
     CryptoPP::HexEncoder encoder(new CryptoPP::StringSink(result));

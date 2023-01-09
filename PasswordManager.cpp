@@ -75,7 +75,7 @@ void startMenu(bool argsPassed, int choice, std::string argFilename)
 			std::cout << "Password: ";
 			std::cin >> masterPassword;
 			try {
-				root = root->loadFromFile(filename, masterPassword); //throws runtime_error
+				root = AVLTree::loadFromFile(root, filename, masterPassword); //throws runtime_error
 				entriesMenu(root, filename, masterPassword);
 			}
 			catch (std::runtime_error& re)
@@ -143,12 +143,12 @@ void entriesMenu(AVLTree* root, std::string& filename, std::string& masterPasswo
 			switch (choice)
 			{
 			case command::LIST_ALL: // List all entries
-				std::cout << root->allToString();
+				std::cout << AVLTree::allToString(root);
 				break;
 			case command::FIND: // find an entry
 				std::cout << "Enter application name to search: ";
 				std::cin >> name;
-				std::cout << root->findNode(name)->toString();
+				std::cout << AVLTree::toString(AVLTree::findNode(root, name));
 				break;
 			case command::ADD: // add an entry
 				std::cout << "Enter application name: ";
@@ -157,17 +157,17 @@ void entriesMenu(AVLTree* root, std::string& filename, std::string& masterPasswo
 				std::cin >> username;
 				std::cout << "Enter password: ";
 				std::cin >> password;
-				root = root->insertNodeAVL(name, username, password); //throws runtime_error
+				root = AVLTree::insertNodeAVL(root, name, username, password); //throws runtime_error
 				break;
 			case command::DELETE: // delete an entry
 				std::cout << "Application name to delete: ";
 				std::cin >> name;
-				root = root->deleteNode(name); //balance
+				root = AVLTree::deleteNode(root, name);
 				break;
 			case command::UPDATE_USERNAME: // update username
 				std::cout << "Enter application name: ";
 				std::cin >> name;
-				temp = root->findNode(name);
+				temp = AVLTree::findNode(root, name);
 				std::cout << "Enter new username: ";
 				std::cin >> username;
 				temp->setUsername(username);
@@ -175,7 +175,7 @@ void entriesMenu(AVLTree* root, std::string& filename, std::string& masterPasswo
 			case command::UPDATE_PASSWORD: // update password
 				std::cout << "Enter application name: ";
 				std::cin >> name;
-				temp = root->findNode(name);
+				temp = AVLTree::findNode(root, name);
 				std::cout << "Enter new password: ";
 				std::cin >> password;
 				temp->setPassword(password);
@@ -187,11 +187,11 @@ void entriesMenu(AVLTree* root, std::string& filename, std::string& masterPasswo
 				std::cin >> masterPassword;
 				// FALLTHROUGH
 			case command::SAVE: // save changes and exit
-				root->saveToFile(filename, masterPassword); //throws runtime_error
+				AVLTree::saveToFile(root, filename, masterPassword); //throws runtime_error
 				std::cout << "File saved" << std::endl;
 				// FALLTHROUGH
 			case command::EXIT: // discard changes and exit
-				root = root->deleteAllNodes();
+				root = AVLTree::deleteAllNodes(root);
 				return;
 			default:
 				printEntriesMenu();

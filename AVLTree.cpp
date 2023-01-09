@@ -25,9 +25,8 @@ AVLTree::AVLTree(std::string& name, std::string& username, std::string& password
 * @param password	Password to assign to a node.
 * @return			Returns the address of the parent node.
 */
-AVLTree* AVLTree::insertNodeAVL(std::string& name, std::string& username, std::string& password)
+AVLTree* AVLTree::insertNodeAVL(AVLTree* n, std::string& name, std::string& username, std::string& password)
 {
-	AVLTree* n = this;
 	if (!n)
 	{
 		return new AVLTree(name, username, password);
@@ -36,29 +35,29 @@ AVLTree* AVLTree::insertNodeAVL(std::string& name, std::string& username, std::s
 
 	if (n->name > name)
 	{
-		n->left = n->left->insertNodeAVL(name, username, password);
-		if (n->left->calcHeight() - n->right->calcHeight() == 2)
+		n->left = insertNodeAVL(n->left, name, username, password);
+		if (calcHeight(n->left) - calcHeight(n->right) == 2)
 		{
 			if (n->left->name > name) {
-				n = n->llRotation();
+				n = llRotation(n);
 			}
 			else
 			{
-				n = n->lrRotation();
+				n = lrRotation(n);
 			}
 		}
 	}
 	else if (n->name < name)
 	{
-		n->right = n->right->insertNodeAVL(name, username, password);
-		if (n->right->calcHeight() - n->left->calcHeight() == 2)
+		n->right = insertNodeAVL(n->right, name, username, password);
+		if (calcHeight(n->right) - calcHeight(n->left) == 2)
 		{
 			if (n->right->name < name) {
-				n = n->rrRotation();
+				n = rrRotation(n);
 			}
 			else
 			{
-				n = n->rlRotation();
+				n = rlRotation(n);
 			}
 		}
 	}
@@ -74,21 +73,21 @@ AVLTree* AVLTree::insertNodeAVL(std::string& name, std::string& username, std::s
 * Calculates a node's height.
 * @return	Returns the node's height.
 */
-int AVLTree::calcHeight()
+int AVLTree::calcHeight(AVLTree* n)
 {
-	if (!this) return 0;
-	return std::max(this->left->calcHeight(), this->right->calcHeight()) + 1;
+	if (!n) return 0;
+	return std::max(calcHeight(n->left), calcHeight(n->right)) + 1;
 }
 
 /*
 * Right-right rotation.
 * @return	Returns the address of the parent node.
 */
-AVLTree* AVLTree::rrRotation()
+AVLTree* AVLTree::rrRotation(AVLTree* n)
 {
-	AVLTree* temp = this->right;
-	this->right = temp->left;
-	temp->left = this;
+	AVLTree* temp = n->right;
+	n->right = temp->left;
+	temp->left = n;
 	return temp;
 }
 
@@ -96,11 +95,11 @@ AVLTree* AVLTree::rrRotation()
 * Left-left rotation.
 * @return	Returns the address of the parent node.
 */
-AVLTree* AVLTree::llRotation()
+AVLTree* AVLTree::llRotation(AVLTree* n)
 {
-	AVLTree* temp = this->left;
-	this->left = temp->right;
-	temp->right = this;
+	AVLTree* temp = n->left;
+	n->left = temp->right;
+	temp->right = n;
 	return temp;
 }
 
@@ -108,22 +107,22 @@ AVLTree* AVLTree::llRotation()
 * Left-right rotation.
 * @return	Returns the address of the parent node.
 */
-AVLTree* AVLTree::lrRotation()
+AVLTree* AVLTree::lrRotation(AVLTree* n)
 {
-	AVLTree* temp = this->left;
-	this->left = temp->rrRotation();
-	return this->llRotation();
+	AVLTree* temp = n->left;
+	n->left = rrRotation(temp);
+	return llRotation(n);
 }
 
 /*
 * Right-left rotation.
 * @return	Returns the address of the parent node.
 */
-AVLTree* AVLTree::rlRotation()
+AVLTree* AVLTree::rlRotation(AVLTree* n)
 {
-	AVLTree* temp = this->right;
-	this->right = temp->llRotation();
-	return this->rrRotation();
+	AVLTree* temp = n->right;
+	n->right = llRotation(temp);
+	return rrRotation(n);
 }
 
 /*
@@ -131,63 +130,62 @@ AVLTree* AVLTree::rlRotation()
 * @param	nameToDelete	Name of the node to delete.
 * @return					Returns the address of the parent node.
 */
-AVLTree* AVLTree::deleteNode(std::string& nameToDelete)
+AVLTree* AVLTree::deleteNode(AVLTree* n, std::string& nameToDelete)
 {
-	if (!this)
+	if (!n)
 	{
 		return nullptr;
 	}
 
-	if (this->name < nameToDelete)
+	if (n->name < nameToDelete)
 	{
-		this->right = this->right->deleteNode(nameToDelete);
+		n->right = deleteNode(n->right, nameToDelete);
 	}
-	else if (this->name > nameToDelete)
+	else if (n->name > nameToDelete)
 	{
-		this->left = this->left->deleteNode(nameToDelete);
+		n->left = deleteNode(n->left, nameToDelete);
 	}
 	else
 	{
-		if (this->left)
+		if (n->left)
 		{
-			AVLTree* temp = this->left->findMax();
-			this->name = temp->name;
-			this->username = temp->username;
-			this->password = temp->password;
-			this->left = this->left->deleteNode(temp->name);
+			AVLTree* temp = findMax(n->left);
+			n->name = temp->name;
+			n->username = temp->username;
+			n->password = temp->password;
+			n->left = deleteNode(n->left, temp->name);
 		}
-		else if (this->right)
+		else if (n->right)
 		{
-			AVLTree* temp = this->right->findMin();
-			this->name = temp->name;
-			this->username = temp->username;
-			this->password = temp->password;
-			this->right = this->right->deleteNode(temp->name);
+			AVLTree* temp = findMin(n->right);
+			n->name = temp->name;
+			n->username = temp->username;
+			n->password = temp->password;
+			n->right = deleteNode(n->right, temp->name);
 		}
 		else
 		{
-			delete(this);
+			delete(n);
 			return nullptr;
 		}
 	}
 
-	return this;
+	return n;
 }
 
 /*
 * Finds the node with the maximum value.
 * @return	Returns the address of the node with the maximum value.
 */
-AVLTree* AVLTree::findMax()
+AVLTree* AVLTree::findMax(AVLTree* n)
 {
-	AVLTree* temp = this;
-	if (temp)
+	if (n)
 	{
-		while (temp->right)
+		while (n->right)
 		{
-			temp = temp->right;
+			n = n->right;
 		}
-		return temp;
+		return n;
 	}
 
 	return nullptr;
@@ -197,16 +195,15 @@ AVLTree* AVLTree::findMax()
 * Finds the node with the minimum value.
 * @return	Returns the address of the node with the minimum value.
 */
-AVLTree* AVLTree::findMin()
+AVLTree* AVLTree::findMin(AVLTree* n)
 {
-	AVLTree* temp = this;
-	if (temp)
+	if (n)
 	{
-		while (temp->left)
+		while (n->left)
 		{
-			temp = temp->left;
+			n = n->left;
 		}
-		return temp;
+		return n;
 	}
 
 	return nullptr;
@@ -217,20 +214,20 @@ AVLTree* AVLTree::findMin()
 * @param nameToFind		Name of the node to search.
 * @return				Returns the address of the node with a certain value.
 */
-AVLTree* AVLTree::findNode(std::string& nameToFind)
+AVLTree* AVLTree::findNode(AVLTree* n, std::string& nameToFind)
 {
-	if (!this) throw std::runtime_error("Applicaton with this name does not exist");
+	if (!n) throw std::runtime_error("Applicaton with this name does not exist");
 
-	if (this->name > nameToFind)
+	if (n->name > nameToFind)
 	{
-		return this->left->findNode(nameToFind);
+		return findNode(n->left, nameToFind);
 	}
-	else if (this->name < nameToFind)
+	else if (n->name < nameToFind)
 	{
-		return this->right->findNode(nameToFind);
+		return findNode(n->right, nameToFind);
 	}
 
-	return this;
+	return n;
 }
 
 /*
@@ -252,26 +249,26 @@ void AVLTree::setPassword(std::string& newPassword)
 /*
 * Prints the node.
 */
-std::string AVLTree::toString()
+std::string AVLTree::toString(AVLTree* n)
 {
-	if (!this) return "";
+	if (!n) return "";
 	std::stringstream buffer;
-	buffer << "Application name: " << name << std::endl
-		<< "Username: " << username << std::endl
-		<< "Password: " << password << std::endl << std::endl;
+	buffer << "Application name: " << n->name << std::endl
+		<< "Username: " << n->username << std::endl
+		<< "Password: " << n->password << std::endl << std::endl;
 	return buffer.str();
 }
 
 /*
 * Prints all nodes.
 */
-std::string AVLTree::allToString()
+std::string AVLTree::allToString(AVLTree* n)
 {
-	if (!this) return "";
+	if (!n) return "";
 	std::stringstream buffer;
-	buffer << this->left->allToString();
-	buffer << this->toString();
-	buffer << this->right->allToString();
+	buffer << allToString(n->left);
+	buffer << toString(n);
+	buffer << allToString(n->right);
 	return buffer.str();
 }
 
@@ -279,12 +276,12 @@ std::string AVLTree::allToString()
 * Deletes all nodes.
 * @return	Returns the address of the root node.
 */
-AVLTree* AVLTree::deleteAllNodes()
+AVLTree* AVLTree::deleteAllNodes(AVLTree* n)
 {
-	if (!this) return nullptr;
-	this->left->deleteAllNodes();
-	this->right->deleteAllNodes();
-	delete(this);
+	if (!n) return nullptr;
+	deleteAllNodes(n->left);
+	deleteAllNodes(n->right);
+	delete(n);
 	return nullptr;
 }
 
@@ -293,9 +290,9 @@ AVLTree* AVLTree::deleteAllNodes()
 * @param filename			Name of the file.
 * @param masterPassword		Password used to encrypt the file.
 */
-void AVLTree::saveToFile(std::string& filename, std::string& masterPassword)
+void AVLTree::saveToFile(AVLTree* n, std::string& filename, std::string& masterPassword)
 {
-	std::string buffer = this->parseToJSON();
+	std::string buffer = parseToJSON(n);
 	encryptAndSave(buffer, masterPassword, filename);
 }
 
@@ -303,12 +300,11 @@ void AVLTree::saveToFile(std::string& filename, std::string& masterPassword)
 * Parses a tree into JSON.
 * @return	Returns JSON in a form of a string.
 */
-std::string AVLTree::parseToJSON()
+std::string AVLTree::parseToJSON(AVLTree* n)
 {
 	std::stringstream buffer;
 	buffer << "{" << std::endl << "\"entries\":{" << std::endl;
-	this->entryToJSON(&buffer);
-
+	entryToJSON(n, &buffer);
 	buffer << "}" << std::endl << "}" << std::endl;
 
 	return buffer.str();
@@ -318,16 +314,16 @@ std::string AVLTree::parseToJSON()
 * Creates a new JSON entry.
 * @param buffer		Buffer which stores the JSON. 
 */
-void AVLTree::entryToJSON(std::stringstream* buffer)
+void AVLTree::entryToJSON(AVLTree* n, std::stringstream* buffer)
 {
-	if (!this) return;
+	if (!n) return;
 	*buffer << "{" << std::endl
-		<< "\"name\":" << this->name << std::endl
-		<< "\"username\":" << this->username << std::endl
-		<< "\"password\":" << this->password << std::endl
+		<< "\"name\":" << n->name << std::endl
+		<< "\"username\":" << n->username << std::endl
+		<< "\"password\":" << n->password << std::endl
 		<< "}" << std::endl;
-	this->left->entryToJSON(buffer);
-	this->right->entryToJSON(buffer);
+	entryToJSON(n->left, buffer);
+	entryToJSON(n->right, buffer);
 }
 
 /*
@@ -336,10 +332,9 @@ void AVLTree::entryToJSON(std::stringstream* buffer)
 * @param masterPassword		Password used to decrypt the file.
 * @return					Returns the address of the root node.
 */
-AVLTree* AVLTree::loadFromFile(std::string& filename, std::string& masterPassword)
+AVLTree* AVLTree::loadFromFile(AVLTree* n, std::string& filename, std::string& masterPassword)
 {
 	std::string head[] = { "{", "\"entries\":{"};
-	AVLTree* n = this;
 	std::string buffer;
 	
 	buffer = loadAndDecrypt(masterPassword, filename);
@@ -356,7 +351,7 @@ AVLTree* AVLTree::loadFromFile(std::string& filename, std::string& masterPasswor
 	{
 		while (buffer == "{")
 		{
-			n = n->newEntry(&ssbuffer);
+			n = newEntry(n, &ssbuffer);
 			ssbuffer >> buffer;
 			if (buffer != "}") throw std::runtime_error("Invalid file foramt");
 			ssbuffer >> buffer;
@@ -382,7 +377,7 @@ AVLTree* AVLTree::loadFromFile(std::string& filename, std::string& masterPasswor
 * @param fileStream		Input file stream.
 * @return				Returns the root node.
 */
-AVLTree* AVLTree::newEntry(std::stringstream* ssbuffer)
+AVLTree* AVLTree::newEntry(AVLTree* n, std::stringstream* ssbuffer)
 {
 	std::string buffer, name, username, password, tokenType, tokenValue;
 	for (size_t i = 0; i < 3; i++)
@@ -404,5 +399,5 @@ AVLTree* AVLTree::newEntry(std::stringstream* ssbuffer)
 		}
 		else throw std::runtime_error("Invalid file foramt");
 	}
-	return this->insertNodeAVL(name, username, password);
+	return insertNodeAVL(n, name, username, password);
 }

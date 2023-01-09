@@ -15,7 +15,7 @@
 
 void encryptAndSave(std::string& plainText, std::string& password, std::string& filename);
 std::string loadAndDecrypt(std::string& password, std::string& filename);
-std::string newSalt();
+std::string newSalt(CryptoPP::AutoSeededRandomPool& prng);
 
 /*
 * NOTE: Format of the encrypted password database file
