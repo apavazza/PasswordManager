@@ -100,8 +100,7 @@ void startMenu(bool argsPassed, int choice, std::string argFilename)
 			{
 				filename = argFilename;
 			}
-			std::cout << "Create a password: ";
-			std::cin >> masterPassword;
+			passwordPrompt(masterPassword);
 			entriesMenu(root, filename, masterPassword);
 			// FALLTHROUGH
 		case mode::QUIT:
@@ -183,8 +182,7 @@ void entriesMenu(AVLTree* root, std::string& filename, std::string& masterPasswo
 			case command::SAVE_AS: // save as... and exit
 				std::cout << "New file name: ";
 				std::cin >> filename;
-				std::cout << "New password: ";
-				std::cin >> masterPassword;
+				passwordPrompt(masterPassword);
 				// FALLTHROUGH
 			case command::SAVE: // save changes and exit
 				AVLTree::saveToFile(root, filename, masterPassword); //throws runtime_error
@@ -233,4 +231,24 @@ void printEntriesMenu()
 		<< "7) Save As... and exit" << std::endl
 		<< "8) Save and exit" << std::endl
 		<< "9) Discard changes and exit" << std::endl << std::endl;
+}
+
+/*
+* Prompts for a new password and verifies it
+*/
+
+void passwordPrompt(std::string& password) {
+	std::string passwordRetyped;
+	while (true) {
+		std::cout << "Create a password: ";
+		std::cin >> password;
+		std::cout << "Retype password: ";
+		std::cin >> passwordRetyped;
+		if (password != passwordRetyped) {
+			std::cout << "Passwords do not match" << std::endl;
+		}
+		else {
+			return;
+		}
+	}
 }

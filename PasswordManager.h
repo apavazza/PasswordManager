@@ -14,3 +14,4 @@ void startMenu(bool argsPassed, int choice, std::string argFilename);
 void entriesMenu(AVLTree* root, std::string& filename, std::string& masterPassword);
 void printstartMenu();
 void printEntriesMenu();
+void passwordPrompt(std::string& password);
