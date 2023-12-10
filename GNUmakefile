@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -Wall -DNDEBUG -O2
 TARGET = PasswordManager
-PREFIX = /usr/local/bin
+PREFIX = /usr/local
 
 default: $(TARGET)
 
@@ -17,7 +17,7 @@ clean:
 	rm *.o $(TARGET)
 
 install:
-	cp $(TARGET) $(PREFIX)/$(TARGET)
+	cp $(TARGET) $(PREFIX)/bin/$(TARGET)
 
 uninstall:
-	rm $(PREFIX)/$(TARGET)
+	rm $(PREFIX)/bin/$(TARGET)
