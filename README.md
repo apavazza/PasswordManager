@@ -17,21 +17,26 @@ Use of these arguments skips the start menu.
 
 ## Compiling
 
-### Linux
+### Using Make (Linux, Windows w/ MSYS, macOS)
 
-1. clone the repository using `$ git clone --recurse-submodules`
-1. run `$ make`
-1. run `# make install`
-1. now you can run the program using `$ PasswordManager`
+1. Clone the repository using `$ git clone --recurse-submodules`
+1. To compile run `$ make`
+1. On Linux, to install, run `# make install`
+1. On Linux, to launch the installed program, run `$ PasswordManager`
 
-### Windows
+**Requirements**
 
-1. clone the repository using `git clone --recurse-submodules`
-1. launch Visual Studio and open the `cryptlib.vcxproj` project located inside the `libs\cryptopp` directory
-1. go to `Build->Batch Build...`
-1. for the project `cryptlib` select the `Release` configuration and build it
-1. launch Visual Studio and open the `PasswordManager.sln` solution located in the main directory
-1. select the `Release` configuration and build it
+- `g++`
+- `glibc-devel-static`
+
+### Using Visual Studio (Windows)
+
+1. Clone the repository using `git clone --recurse-submodules`
+1. Launch Visual Studio and open the `cryptlib.vcxproj` project located inside the `libs\cryptopp` directory
+1. Go to `Build->Batch Build...`
+1. For the project `cryptlib` select the `Release` configuration and build it
+1. Launch Visual Studio and open the `PasswordManager.sln` solution located in the main directory
+1. Select the `Release` configuration and build it
 
 ## Encryption
 
