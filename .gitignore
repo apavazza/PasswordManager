@@ -1,5 +1,7 @@
+bin/
+build/
+obj/
+CMakeLists.txt
+.vscode/
 .vs/
 x64/
-*.o
-PasswordManager
-t

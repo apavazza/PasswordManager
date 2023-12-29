@@ -1,8 +1,12 @@
-CXX = g++
-CXXFLAGS = -Wall -DNDEBUG -O2
-TARGET = PasswordManager
-PREFIX = /usr/local
-LIBDIR = ./cryptopp
+CXX := g++
+CXXFLAGS := -Wall -DNDEBUG -O2
+TARGET := PasswordManager
+PREFIX := /usr/local/bin/
+SRC_DIR := ./src/
+OBJ_DIR := ./obj/
+INC_DIR := ./libs
+LIB_DIR = ./libs/cryptopp
+BIN_DIR := ./bin/
 
 .PHONY: cryptopp
 
@@ -10,20 +14,23 @@ default: $(TARGET)
 
 all: $(TARGET)
 
-PasswordManager: cryptopp PasswordManager.o AVLTree.o AES-CBC.o KDF.o
-	$(CXX) $(CXXFLAGS) PasswordManager.o AVLTree.o AES-CBC.o KDF.o -L$(LIBDIR) -lcryptopp -o $(TARGET)
+$(TARGET): cryptopp $(OBJ_DIR)PasswordManager.o $(OBJ_DIR)AVLTree.o $(OBJ_DIR)AES-CBC.o $(OBJ_DIR)KDF.o
+	mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $(OBJ_DIR)PasswordManager.o $(OBJ_DIR)AVLTree.o $(OBJ_DIR)AES-CBC.o $(OBJ_DIR)KDF.o -L$(LIB_DIR) -lcryptopp -o $(BIN_DIR)$(TARGET)
 
 cryptopp:
-	$(MAKE) -C $(LIBDIR)
+	$(MAKE) -C $(LIB_DIR)
 
-.cpp.o:
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+$(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
+	mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -I$(INC_DIR) -c $< -o $@
 
 clean:
-	rm *.o $(TARGET)
+	$(MAKE) -C $(LIB_DIR) clean
+	rm -f $(OBJ_DIR)*.o $(BIN_DIR)$(TARGET)
 
 install:
-	cp $(TARGET) $(PREFIX)/bin/$(TARGET)
+	cp $(BIN_DIR)$(TARGET) $(PREFIX)$(TARGET)
 
 uninstall:
-	rm $(PREFIX)/bin/$(TARGET)
+	rm -f $(PREFIX)$(TARGET)
