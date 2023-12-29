@@ -2,11 +2,12 @@ CXX := g++
 CXXFLAGS := -Wall -DNDEBUG -O2 -static
 TARGET := PasswordManager
 PREFIX := /usr/local/bin
-SRC_DIR := ./src
-OBJ_DIR := ./obj
+BIN_DIR := ./bin
+BLD_DIR := ./build
 INC_DIR := ./lib
 LIB_DIR := ./lib/cryptopp
-BIN_DIR := ./bin
+OBJ_DIR := ./obj
+SRC_DIR := ./src
 
 .PHONY: cryptopp
 
@@ -27,7 +28,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 clean:
 	$(MAKE) -C $(LIB_DIR) clean
-	rm -f $(OBJ_DIR)/*.o $(BIN_DIR)/$(TARGET)
+	rm -rf $(BIN_DIR) $(BLD_DIR) $(OBJ_DIR)
 
 install:
 	cp $(BIN_DIR)/$(TARGET) $(PREFIX)/$(TARGET)
