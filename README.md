@@ -4,7 +4,7 @@ A command line password manager
 
 ## Download
 
-Here you can download Linux and Windows x64 binaries
+Here you can download x86_64 binaries
 
 **[DOWNLOAD](https://github.com/apavazza/PasswordManager/releases)**
 
@@ -30,7 +30,7 @@ Clone the repository using `git clone --recurse-submodules`
 - `g++`
 - `glibc-devel-static`
 
-### Using Cmake (Linux, Windows w/ MSYS2, macOS)
+### Using CMake (Linux, Windows w/ MSYS2, macOS)
 
 ```shell
 mkdir build
