@@ -17,10 +17,11 @@ Use of these arguments skips the start menu.
 
 ## Compiling
 
-### Using Make (Linux, Windows w/ MSYS, macOS)
+Clone the repository using `git clone --recurse-submodules`
 
-1. Clone the repository using `$ git clone --recurse-submodules`
-1. To compile run `$ make`
+### Using Make (Linux, Windows w/ MSYS2, macOS)
+
+1. To compile, run `$ make`
 1. On Linux, to install, run `# make install`
 1. On Linux, to launch the installed program, run `$ PasswordManager`
 
@@ -29,9 +30,21 @@ Use of these arguments skips the start menu.
 - `g++`
 - `glibc-devel-static`
 
+### Using Cmake (Linux, Windows w/ MSYS2, macOS)
+
+```shell
+mkdir build
+cd build
+cmake ..
+make
+```
+
+**Requirements**
+
+- `glibc-devel-static`
+
 ### Using Visual Studio (Windows)
 
-1. Clone the repository using `git clone --recurse-submodules`
 1. Launch Visual Studio and open the `cryptlib.vcxproj` project located inside the `libs\cryptopp` directory
 1. Go to `Build->Batch Build...`
 1. For the project `cryptlib` select the `Release` configuration and build it
