@@ -45,7 +45,7 @@ make
 
 ### Using Visual Studio (Windows)
 
-1. Launch Visual Studio and open the `cryptlib.vcxproj` project located inside the `libs\cryptopp` directory
+1. Launch Visual Studio and open the `cryptlib.vcxproj` project located inside the `lib\cryptopp` directory
 1. Go to `Build->Batch Build...`
 1. For the project `cryptlib` select the `Release` configuration and build it
 1. Launch Visual Studio and open the `PasswordManager.sln` solution located in the main directory
