@@ -1,3 +1,6 @@
+# Password Manager
+A command line password manager
+
 ## Download
 
 Here you can download x86_64 binaries
