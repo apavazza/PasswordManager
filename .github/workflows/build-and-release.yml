@@ -19,13 +19,13 @@ jobs:
         run: make
 
       - name: Rename
-        run: mv bin/PasswordManager PasswordManager_linux_x64_${{ github.ref_name }}
+        run: mv bin/PasswordManager PasswordManager-${{ github.ref_name }}-linux-x86_64
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: PasswordManager
-          path: ./PasswordManager_linux_x64_*
+          name: PasswordManager-${{ github.ref_name }}-linux-x86_64
+          path: ./PasswordManager-${{ github.ref_name }}-linux-x86_64
           retention-days: 1
 
   create_release:
@@ -37,16 +37,16 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4.2.1
         with:
-          name: PasswordManager
+          name: PasswordManager-${{ github.ref_name }}-linux-x86_64
 
       - name: Create Release
         id: create_release
-        uses: ncipollo/release-action@v1.13.0
+        uses: ncipollo/release-action@v1.16.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: Release ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
           tag: ${{ github.ref_name }}
           draft: true
           prerelease: false
-          artifacts: PasswordManager_*
+          artifacts: PasswordManager-${{ github.ref_name }}-linux-x86_64
