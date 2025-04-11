@@ -1,7 +1,9 @@
 # Password Manager
-A command line password manager
 
-[![Build and Create Release](https://github.com/apavazza/PasswordManager/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/apavazza/PasswordManager/actions/workflows/build-and-release.yml)
+[![Build](https://github.com/apavazza/PasswordManager/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/apavazza/PasswordManager/actions/workflows/build-and-release.yml)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+
+A command line password manager
 
 ## Download
 
@@ -59,4 +61,4 @@ Key derivation function is PKCS5 PBKDF2 HMAC with SHA3-256 hashing.
 
 ## License
 
-This software is provided under the terms of the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.txt).
+This software is provided under the terms of the [GNU General Public License v3.0](LICENSE).
